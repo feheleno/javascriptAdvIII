@@ -5,6 +5,8 @@ var ConnectionFactory = (function () {
 
     let connection = null;
 
+    let close;
+
     return class ConnectionFactory {
 
         constructor() {
@@ -22,6 +24,13 @@ var ConnectionFactory = (function () {
                 openRequest.onsuccess = e => {
                     if (!connection) {
                         connection = e.target.result;
+                        //ao invés de usar o bind aqui podemos utilizar um Reflect no método closeConnection
+                        //e atribuir diretamente o método connection.close à variável close, como abaixo.
+                        //close = connection.close;
+                        close = connection.close.bind(connection);
+                        connection.close = function () {
+                            throw new Error('connection.close() não pode ser chamado diretamente.');
+                        }
                     }
                     resolve(connection);
                 };
@@ -42,6 +51,14 @@ var ConnectionFactory = (function () {
                     autoIncrement: true
                 });
             });
+        }
+
+        static closeConnection(connection) {
+            if (connection) {
+                //Reflect.apply(close, connection, []);
+                close();
+                connection = null;
+            }
         }
     }
 })();
