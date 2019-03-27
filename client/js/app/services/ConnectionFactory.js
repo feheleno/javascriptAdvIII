@@ -24,7 +24,7 @@ var ConnectionFactory = (function () {
                 openRequest.onsuccess = e => {
                     if (!connection) {
                         connection = e.target.result;
-                        //ao invés de usar o bind aqui podemos utilizar um Reflect no método closeConnection
+                        //ao invés de usar o bind aqui podemos utilizar um Reflect.apply no método closeConnection
                         //e atribuir diretamente o método connection.close à variável close, como abaixo.
                         //close = connection.close;
                         close = connection.close.bind(connection);
