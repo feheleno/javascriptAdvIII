@@ -59,23 +59,21 @@ class NegociacaoController {
     adiciona(event) {
         event.preventDefault();
 
-        ConnectionFactory
-            .getConnection()
-            .then(connection => {
-                let negociacao = this._criaNegociacao();
-                new NegociacaoDao(connection)
-                    .adiciona(negociacao)
-                    .then(() => {
-                        this._listaNegociacoes.adiciona(negociacao);
-                        this._mensagem.texto = 'Negociação adicionada com sucesso'; 
-                        this._limpaFormulario();
-                    });
-            })
-            .catch(erro => this._mensagem.texto = erro);
+        let negociacao = this._criaNegociacao();
+
+        new NegociacaoService()
+                .cadastra(negociacao)
+                .then(mensagem => {
+                    this._listaNegociacoes.adiciona(negociacao);
+                    this._mensagem.texto = mensagem;
+                    this._limpaFormulario();
+                })
+                .catch(erro => this._mensagem.texto = erro);
+
+        
     }
     
     apaga() {
-        
         ConnectionFactory
             .getConnection()
             .then(connection => new NegociacaoDao(connection))
@@ -91,8 +89,6 @@ class NegociacaoController {
     }
 
     _importaNegociacoes() {
-        
-        
         let service = new NegociacaoService();
         service
             .obterNegociacoes()
@@ -111,7 +107,6 @@ class NegociacaoController {
     }
     
     _criaNegociacao() {
-        
         return new Negociacao(
             DateHelper.textoParaData(this._inputData.value),
             //Ajustado para os valores serem tratados como números ao invés de strings.
@@ -121,7 +116,6 @@ class NegociacaoController {
     }
     
     _limpaFormulario() {
-     
         this._inputData.value = '';
         this._inputQuantidade.value = 1;
         this._inputValor.value = 0.0;

@@ -77,6 +77,17 @@ class NegociacaoService {
 
             }).catch(erro => reject(erro));
         });
-    }    
+    }
+
+    cadastra(negociacao) {
+        return ConnectionFactory
+                    .getConnection()
+                    .then(connection => new NegociacaoDao(connection))
+                    .then(dao => dao.adiciona(negociacao))
+                    .then(() => this._mensagem.texto = 'Negociação cadastrada com sucesso')
+                    .catch(() => {
+                        throw new Error( 'Não foi possível cadastrar a Negociação.')
+                    });
+    }
 }
 
