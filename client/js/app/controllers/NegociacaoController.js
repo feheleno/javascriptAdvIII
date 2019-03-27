@@ -15,7 +15,33 @@ class NegociacaoController {
        
         this._mensagem = new Bind(
             new Mensagem(), new MensagemView($('#mensagemView')),
-            'texto');       
+            'texto');
+
+        /* Implementação sem condensar passos, para facilitar o entendimento.
+           Abaixo dessa seção comentada estará o código final, mais enxuto.
+            ConnectionFactory
+                .getConnection()
+                .then(connection => {
+                    new NegociacaoDao(connection)
+                        .listaTodos()
+                        .then(negociacoes => {
+                            negociacoes.forEach(negociacao => {
+                                this._listaNegociacoes.adiciona(negociacao);
+                            })
+                        });
+                });
+        */
+        
+        ConnectionFactory
+            .getConnection()
+            .then(connection => new NegociacaoDao(connection))
+            .then(dao => dao.listaTodos())
+            .then(negociacoes => {
+                negociacoes.forEach(negociacao => {
+                    this._listaNegociacoes.adiciona(negociacao);
+                })
+            });
+
     }
     
     adiciona(event) {
