@@ -85,8 +85,32 @@ class NegociacaoService {
                     .then(connection => new NegociacaoDao(connection))
                     .then(dao => dao.adiciona(negociacao))
                     .then(() => this._mensagem.texto = 'Negociação cadastrada com sucesso')
-                    .catch(() => {
-                        throw new Error( 'Não foi possível cadastrar a Negociação.')
+                    .catch(erro => {
+                        console.log(erro);
+                        throw new Error( 'Não foi possível cadastrar a Negociação.');
+                    });
+    }
+
+    lista() {
+        return ConnectionFactory
+                    .getConnection()
+                    .then(connection => new NegociacaoDao(connection))
+                    .then(dao => dao.listaTodos())
+                    .catch(erro => {
+                        console.log(erro);
+                        throw new Error( 'Não foi possível obter as Negociações.');
+                    });
+    }
+
+    apaga() {
+        return ConnectionFactory
+                    .getConnection()
+                    .then(connection => new NegociacaoDao(connection))
+                    .then(dao => dao.apagaTodos())
+                    .then(() => 'Negociação removidas com sucesso')
+                    .catch(erro => {
+                        console.log(erro);
+                        throw new Error( 'Não foi possível apagar as Negociações.');
                     });
     }
 }
