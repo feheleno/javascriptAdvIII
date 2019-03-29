@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Negociações</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.css">
+</head>
+
+<body class="container">
+    <form class="form">
+        <div>
+            <label for="data">Data</label>
+            <input type="date" id="data" class="form-control" required autofocus />
+        </div>
+
+        <div>
+            <label for="quantidade">Quantidade</label>
+            <input type="number" id="quantidade" class="form-control" value="1" min="1" step="1" required />
+        </div>
+
+        <div>
+            <label for="valor">Valor</label>
+            <input type="number" id="valor" class="form-control" value="0.0" min="0.01" step="0.01" required />
+        </div>
+
+        <button class="btn btn-primary" type="submit" onclick="sendPost(event)">Enviar dados para o servidor</button>
+
+    </form>
+    <script>
+        function sendPost(event) {
+            event.preventDefault();
+            console.log('Enviando nova Negociacao.');
+
+            let $ = document.querySelector.bind(document);
+
+            let inputData = $('#data');
+            let inputQuantidade = $('#quantidade');
+            let inputValor = $('#valor');
+
+            let negociacao = {data: inputData.value, quantidade: inputQuantidade.value, valor: inputValor.value};
+
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "/negociacoes", true);
+            xhr.setRequestHeader("Content-type", "application/json");
+
+            xhr.onreadystatechange = () => {
+
+                if (xhr.readyState == 4) {
+
+                    if (xhr.status == 200) {
+                        inputData.value = '';
+                        inputQuantidade.value = 1;
+                        inputValor.value = 0.0;
+                        inputData.focus();
+                        alert('Negociação enviada com sucesso');
+                    } else {
+                        alert(`Não foi possível enviar a negociação: ${xhr.responseText}`);
+                    }
+                }
+            }
+            xhr.send(JSON.stringify(negociacao));
+        }
+    </script>
+</body>
+
+</html>
